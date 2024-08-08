@@ -1,4 +1,11 @@
 import joi from "joi";
+import {ObjectId} from 'mongodb'
+const objectIdValidator = (value, helpers) => {
+  if (!ObjectId.isValid(value)) {
+    return helpers.message('"{{#label}}" must be a valid MongoDB ObjectId');
+  }
+  return value;  // Everything is OK
+};
 
 export default {
     password: joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
@@ -24,5 +31,6 @@ export default {
         filename: joi.string().required(),
         path:joi.string().required(),
         size: joi.number().required()
-    }).required()
+    }),
+    id : joi.string().custom(objectIdValidator, 'ObjectId validation')
 }

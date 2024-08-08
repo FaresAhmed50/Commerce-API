@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose";
 
-let categorySchema = mongoose.Schema({
+let subCategorySchema = mongoose.Schema({
     name:{
         type: String,
         required: true,
@@ -22,7 +22,6 @@ let categorySchema = mongoose.Schema({
     createdBy:{
         type: Types.ObjectId,
         ref: 'user',
-        required: true
     }
     ,
     image:{
@@ -41,18 +40,13 @@ let categorySchema = mongoose.Schema({
         required: true,
         unique: true    
     }
+    ,
+    category:{
+        type: Types.ObjectId,
+        ref: 'category',
+        required: true
+    }
     
-},{
-    // toObject: { virtuals: true },
-    toJSON: { virtuals: true }  // to include virtual fields in the JSON output
 })
 
-// Virtual field to get the number of products in the category
-
-categorySchema.virtual('subCategories', {
-    ref: 'subCategory',
-    localField: '_id',
-    foreignField: 'category',
-});
-
-export const categoryModel= mongoose.model('category', categorySchema);
+export const subCategoryModel= mongoose.model('subCategory', subCategorySchema);

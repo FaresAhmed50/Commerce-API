@@ -7,9 +7,14 @@ export default (roles = ["user"])=>{
     return asyncHandler(
         async (req,res,next)=>{
             let {token} = req.headers
+
+            if(!token){
+                next(new AppError('token must provided',500))
+            }
+
             let decoded = jwt.verify(token, process.env.SECRET)
             if(!decoded.email){
-                next('wrong token',404)
+                next(new AppError('wrong token',404))
             }
             req.user = await userModel.findOne({email:decoded.email})
             if(!req.user){

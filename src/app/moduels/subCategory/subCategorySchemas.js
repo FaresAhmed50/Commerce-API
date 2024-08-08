@@ -1,7 +1,8 @@
 import glopalSchema from "../../glopalMiddelWares/glopalSchema.js";
 import joi from 'joi'
 
-export const createCategorySchema = {
+
+export const createSubCategorySchema = {
     body: joi.object({
         name: joi.string().required(),
     }),
@@ -11,7 +12,7 @@ export const createCategorySchema = {
     file:glopalSchema.file.required()
 } 
 
-export const updateCategorySchema = {
+export const updateSubCategorySchema = {
     body: joi.object({
         name: joi.string(),
     }),

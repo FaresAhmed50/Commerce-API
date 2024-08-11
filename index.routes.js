@@ -5,7 +5,7 @@ import productRouter from './src/app/moduels/product/product.routes.js'
 import couponRouter from './src/app/moduels/coupon/coupon.routes.js'
 import cartRouter from './src/app/moduels/cart/cart.routes.js'
 import orderRouter from './src/app/moduels/order/order.routes.js'
-import whishlistRouter from './src/app/moduels/whishlist/whishlist.routes.js'
+import wishListRouter from './src/app/moduels/wishlist/wishlist.routes.js'
 
 export default {
     userRouter,
@@ -15,5 +15,5 @@ export default {
     couponRouter,
     cartRouter,
     orderRouter,
-    whishlistRouter
+    wishListRouter
 }

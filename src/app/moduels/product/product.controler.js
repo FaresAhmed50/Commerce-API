@@ -7,6 +7,7 @@ import { productModel } from "../../../db/models/Product.model.js";
 import { subCategoryModel } from "../../../db/models/subCategory.model.js";
 import { categoryModel } from "../../../db/models/category.model.js";
 import { brandModel } from "../../../db/models/brand.model.js";
+import apiFeatures from "../../utils/apiFeatures.js";
 
 
 export const createProduct = asyncHandler(async (req, res, next) => {
@@ -176,9 +177,23 @@ export const getProudcts = asyncHandler(async (req,res,next)=>{
 
 // complete later
 export const getAllProducts = asyncHandler(async (req,res,next)=>{
-    let {page , limit , } = req.query    
 
-    let products = await productModel.find({ category : categoryId , subCategory : subCategoryId})
+    let api = new apiFeatures(productModel.find() , req.query)
+    .pagination()
+    .filter()
+    .sort()
+    .select()
+
+    
+    
+
+    
+    const products = await apiFeatures.mongooseQuery
+
+
+    if(products.length == 0){
+       return next(new AppError( 'no products ', 404))
+    }
     
     return res.json({ msg: 'Products fetched', products })
 })

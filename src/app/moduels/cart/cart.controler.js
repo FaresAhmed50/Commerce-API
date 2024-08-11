@@ -29,13 +29,13 @@ export const removeFromCart = asyncHandler(async (req, res, next) => {
 })
 
 export const getCart = asyncHandler(async (req, res, next) => {
-    console.log(req.user);
     const cart = await cartModel.findOne({user: req.user._id})
     res.json({ msg: 'done', cart })
 })
 
 export const createCart = asyncHandler(async (req, res, next) => {
     const { productId , quantity } = req.body  
+    console.log("in");
 
     let product = await productModel.findOne({_id:productId , stock : {$gte:quantity}})
     if(!product){

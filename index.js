@@ -16,7 +16,7 @@ app.use('/products',ir.productRouter)
 app.use('/coupon',ir.couponRouter)
 app.use('/cart',ir.cartRouter)
 app.use('/order',ir.orderRouter)
-app.use('/whishlist',ir.whishlistRouter)
+app.use('/wishList',ir.wishListRouter)
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

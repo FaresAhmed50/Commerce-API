@@ -29,4 +29,5 @@ export const deleteFromDB = async (req, res, next)=>{
     if(req.data){
         await req.data.model.findByIdAndDelete(req.data.id)
     }
+    return
 }   

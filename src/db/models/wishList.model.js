@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose";
 
-let whishListSchema = mongoose.Schema({
+let wishListSchema = mongoose.Schema({
     
     
     user:{
@@ -20,4 +20,4 @@ let whishListSchema = mongoose.Schema({
 })
 
 
-export const whishListModel= mongoose.model('whishList', whishListSchema);
+export const wishListModel= mongoose.model('wishList', wishListSchema);

@@ -14,8 +14,8 @@ productRouter.use('/:productId/review',reviewRouter)
 productRouter.post('/',auth(["admin"]),multerHost().fields([{name:'image' , maxCount:1  },{ name:"images",maxCount: 4}]),GValidator(createProudctSchema),createProduct)
 productRouter.delete('/:ProductID',auth(["admin"]),deleteProudct)
 productRouter.put('/:ProductID',auth(["admin"]),multerHost().fields([{name:'image' , maxCount:1  },{ name:"images",maxCount: 4}]),GValidator(updateProudctSchema),updateProduct)
-productRouter.get('/',auth(["admin","user"]),getProudcts)
-productRouter.get('/getAllProducts',auth(["admin","user"]),getAllProducts)
+productRouter.get('/',getProudcts)
+productRouter.get('/getAllProducts',getAllProducts)
 
 
 export default productRouter

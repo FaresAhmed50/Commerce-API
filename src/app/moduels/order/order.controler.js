@@ -127,7 +127,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                 return {
                     price_data: {
                         currency: "egp",
-                        unit_amount: prod.price,
+                        unit_amount: prod.price*1000,
                         product_data: {
                             name: prod.title,
                         },

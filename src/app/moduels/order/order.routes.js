@@ -13,6 +13,7 @@ let orderRouter = Router()
 orderRouter.post('/',auth(["admin" , "user"]),GValidator(createOrderSchema),createOrder)
 orderRouter.put('/:id',auth(["admin" , "user"]),GValidator(cancelOrderSchema),cancelOrder)
 orderRouter.get('/success/:id',auth(["user" , "admin"]),getOrder)
+orderRouter.get('/cancel/:id',auth(["user" , "admin"]),getCanceled)
 // orderRouter.delete('/',auth(["admin" , "user"]),clearCart)
 
 export default orderRouter

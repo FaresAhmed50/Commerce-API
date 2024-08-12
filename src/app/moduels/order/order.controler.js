@@ -199,5 +199,11 @@ export const getOrder = asyncHandler(async (req, res, next) => {
     res.status(200).json({ msg: 'done', order })
 })
 
+export const getCanceled = asyncHandler(async (req, res, next) => {
+    let {id} = req.params
+    let orders = await orderModel.findOneAndUpdate({ _id:id , user: req.user._id } , {status: 'canceled' , canceldBy: req.user._id , reason: 'payment canceld'} , {new: true})
+    res.status(200).json({ msg: 'done', orders })
+})
+
 
 

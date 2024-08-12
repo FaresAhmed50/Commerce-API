@@ -75,6 +75,8 @@ export const createOrder = asyncHandler(async (req, res, next) => {
         await req.body.coupon?.save()
     }
 
+  
+
     const order = await orderModel.create({
         user: req.user._id,
         products: finalProducts,
@@ -135,7 +137,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                     quantity: prod.quantity,
                 }
             }),
-            discounts: order.couponId ? [{ coupon_code: order.couponId }] : [],
+            coupon: order.couponId ? [{ coupon_code: order.couponId }] : [],
             success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
             cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
         })

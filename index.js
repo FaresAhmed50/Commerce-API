@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import connection from './src/db/connection.js'
 import ir from './index.routes.js'
-import { deleteFolder, deleteFromDB, glopalErrorHandler } from './src/app/utils/asyncHandler.js'
+import { deleteFolder, deleteFromDB, delteIdFromCopoun, glopalErrorHandler } from './src/app/utils/asyncHandler.js'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -26,6 +26,6 @@ app.listen(port, () => {
 }
 )
 
-app.use(glopalErrorHandler, deleteFolder, deleteFromDB)
+app.use(glopalErrorHandler, deleteFolder, deleteFromDB,delteIdFromCopoun)
 
 

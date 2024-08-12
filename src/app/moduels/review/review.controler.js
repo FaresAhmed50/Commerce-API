@@ -2,7 +2,7 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import AppError from "../../utils/AppError.js";
 import { reviewModel } from "../../../db/models/review.model.js";
 import { orderModel } from "../../../db/models/order.model.js";
-import { productModel } from "../../../db/models/Product.model.js";
+import { productModel } from "../../../db/models/product.model.js";
 
 
 export const getReviews = asyncHandler(async (req, res, next) => {

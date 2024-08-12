@@ -117,31 +117,31 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     // }])
 
     
-    // if(paymentMethod == 'card'){
-    //     let session = await payment({
-    //         payment_method_types: ["card"],
-    //         mode: "payment",
-    //         customer_email: req.user.email,
-    //         metadata: { orderId: order._id.toString() },
-    //         line_items: order.products.map((prod)=>{
-    //             return {
-    //                 price_data: {
-    //                     currency: "egp",
-    //                     unit_amount: prod.price,
-    //                     product_data: {
-    //                         name: prod.title,
-    //                     },
-    //                 },
-    //                 quantity: prod.quantity,
-    //             }
-    //         }),
-    //         discounts: order.couponId ? [{ coupon_code: order.couponId }] : [],
-    //         success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
-    //         cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
-    //     })
+    if(paymentMethod == 'card'){
+        let session = await payment({
+            payment_method_types: ["card"],
+            mode: "payment",
+            customer_email: req.user.email,
+            metadata: { orderId: order._id.toString() },
+            line_items: order.products.map((prod)=>{
+                return {
+                    price_data: {
+                        currency: "egp",
+                        unit_amount: prod.price,
+                        product_data: {
+                            name: prod.title,
+                        },
+                    },
+                    quantity: prod.quantity,
+                }
+            }),
+            discounts: order.couponId ? [{ coupon_code: order.couponId }] : [],
+            success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
+            cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
+        })
 
-    //     res.status(200).json({ url: session.url , session})
-    // }
+        res.status(200).json({ url: session.url , session})
+    }
 
 
     

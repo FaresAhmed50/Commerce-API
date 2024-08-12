@@ -205,5 +205,11 @@ export const getCanceled = asyncHandler(async (req, res, next) => {
     res.status(200).json({ msg: 'done', orders })
 })
 
+export const deletOrder = asyncHandler(async (req, res, next) => {
+    let { id } = req.params
+    let order = await orderModel.findOneAndDelete({_id:id , user: req.user._id})
+    res.status(200).json({ msg: 'done', order })
+})
+
 
 

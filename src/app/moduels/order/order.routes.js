@@ -14,6 +14,6 @@ orderRouter.post('/',auth(["admin" , "user"]),GValidator(createOrderSchema),crea
 orderRouter.put('/:id',auth(["admin" , "user"]),GValidator(cancelOrderSchema),cancelOrder)
 orderRouter.get('/success/:id',auth(["user" , "admin"]),getOrder)
 orderRouter.get('/cancel/:id',auth(["user" , "admin"]),getCanceled)
-// orderRouter.delete('/',auth(["admin" , "user"]),clearCart)
+orderRouter.delete('/',auth(["admin" , "user"]),deletOrder)
 
 export default orderRouter

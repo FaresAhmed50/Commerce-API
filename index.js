@@ -10,14 +10,16 @@ const port = process.env.PORT || 3000
 
 app.use(cors())
 app.use(express.json())
-app.use('/user', ir.userRouter)
-app.use('/category', ir.categoryRouter)
-app.use('/brand', ir.brandRouter)
-app.use('/products', ir.productRouter)
-app.use('/coupon', ir.couponRouter)
-app.use('/cart', ir.cartRouter)
-app.use('/order', ir.orderRouter)
-app.use('/wishList', ir.wishListRouter)
+setTimeout(() => {
+    app.use('/user', ir.userRouter)
+    app.use('/category', ir.categoryRouter)
+    app.use('/brand', ir.brandRouter)
+    app.use('/products', ir.productRouter)
+    app.use('/coupon', ir.couponRouter)
+    app.use('/cart', ir.cartRouter)
+    app.use('/order', ir.orderRouter)
+    app.use('/wishList', ir.wishListRouter)
+}, 5000);
 
 app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => {

@@ -188,5 +188,16 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
     res.json({ msg: 'done', order })
 })
 
+export const getOrder = asyncHandler(async (req, res, next) => {
+    let { id } = req.params
+    let order = await orderModel.findOne({ _id: id, user: req.user._id })
+
+    if (!order) {
+        return next(new AppError('order not found', 404))
+    }
+
+    res.status(200).json({ msg: 'done', order })
+})
+
 
 

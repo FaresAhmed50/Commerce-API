@@ -11,9 +11,9 @@ export async function payment({
     cancel_url,
     line_items,
     discounts,
-    stripe = new Stripe(process.env.stripe - sk)
+    stripe = new Stripe(process.env.stripe_sk)
 }) {
-    let stripe = new Stripe(process.env.stripe - sk)
+     stripe = new Stripe(process.env.stripe_sk)
     const session = await stripe.checkout.sessions.create({
         payment_method_types,
         mode,

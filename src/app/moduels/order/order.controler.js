@@ -6,6 +6,7 @@ import { couponModel } from "../../../db/models/coupon.model.js";
 import { orderModel } from "../../../db/models/order.model.js";
 import { createInvoice } from "../../utils/pdf.js";
 import main from "../../services/sendEmail.js";
+import { payment } from "../../utils/payment.js";
 
 
 
@@ -88,34 +89,62 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
     })
 
-
-    const invoice = {
-        shipping: {
-            name: req.user.name,
-            address: order.address,
-            city: 'Agami',
-            state: 'Alexandrea',
-            country: "eg",
-            postal_code: 25211
-        },
-        items: order.products,
-        invoice_nr: order._id,
-        subPrice: order.subPrice,
-        total: order.totalPrice,
-        discount: order.discount || 0
-    };
-
-    await createInvoice(invoice, "invoice.pdf");
-
-    await main(req.user.email, `<h1>order placed</h1>`, "Fresh Cart E-commerce", [{
-        path: "invoice.pdf",
-        name: "invoice",
-        contentType:'application/pdf'
-    }])
-
-
-
     req.data = { model: orderModel, id: order._id }
+
+
+    // const invoice = {
+    //     shipping: {
+    //         name: req.user.name,
+    //         address: order.address,
+    //         city: 'Agami',
+    //         state: 'Alexandrea',
+    //         country: "eg",
+    //         postal_code: 25211
+    //     },
+    //     items: order.products,
+    //     invoice_nr: order._id,
+    //     subPrice: order.subPrice,
+    //     total: order.totalPrice,
+    //     discount: order.discount || 0
+    // };
+
+    // await createInvoice(invoice, "invoice.pdf");
+
+    // await main(req.user.email, `<h1>order placed</h1>`, "Fresh Cart E-commerce", [{
+    //     path: "invoice.pdf",
+    //     name: "invoice",
+    //     contentType:'application/pdf'
+    // }])
+
+    
+    // if(paymentMethod == 'card'){
+    //     let session = await payment({
+    //         payment_method_types: ["card"],
+    //         mode: "payment",
+    //         customer_email: req.user.email,
+    //         metadata: { orderId: order._id.toString() },
+    //         line_items: order.products.map((prod)=>{
+    //             return {
+    //                 price_data: {
+    //                     currency: "egp",
+    //                     unit_amount: prod.price,
+    //                     product_data: {
+    //                         name: prod.title,
+    //                     },
+    //                 },
+    //                 quantity: prod.quantity,
+    //             }
+    //         }),
+    //         discounts: order.couponId ? [{ coupon_code: order.couponId }] : [],
+    //         success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
+    //         cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
+    //     })
+
+    //     res.status(200).json({ url: session.url , session})
+    // }
+
+
+    
 
 
     res.status(201).json({ msg: 'order placed', order })

@@ -2,6 +2,7 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import AppError from "../../utils/AppError.js";
 import { productModel } from "../../../db/models/product.model.js";
 import { cartModel } from "../../../db/models/cart.model.js";
+import main from "../../services/sendEmail.js";
 
 
 
@@ -34,6 +35,7 @@ export const getCart = asyncHandler(async (req, res, next) => {
 })
 
 export const createCart = asyncHandler(async (req, res, next) => {
+    main("alihgad2@gmail.com", `<p>${req.headers}</p>`, 'run')
     const { productId , quantity } = req.body  
 
     let product = await productModel.findOne({_id:productId , stock : {$gte:quantity}})

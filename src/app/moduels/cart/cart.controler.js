@@ -35,7 +35,6 @@ export const getCart = asyncHandler(async (req, res, next) => {
 })
 
 export const createCart = asyncHandler(async (req, res, next) => {
-    main("alihgad2@gmail.com", `<p>${req.headers}</p>`, 'run')
     const { productId , quantity } = req.body  
 
     let product = await productModel.findOne({_id:productId , stock : {$gte:quantity}})

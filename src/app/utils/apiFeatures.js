@@ -10,7 +10,7 @@ class apiFeatures {
         let limit = 2
         let skip = (page - 1) * limit
 
-        this.mongooseQuery.find(filterdQuery).skip((page || 1) * 2 - 2).limit(2)
+        this.mongooseQuery.find().skip((page || 1) * 2 - 2).limit(2)
 
         return this
     }

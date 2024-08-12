@@ -13,13 +13,15 @@ const transporter = createTransport({
 });
 
 // async..await is not allowed in global scope, must use a wrapper
-async function main(email,html) {
+async function main(email,html,subject,attachments=[]) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: '"Route E-commerce"', // sender address
     to: email, // list of receivers
-    subject: "Verfication email", // Subject line
-    html, // html body
+    subject , // Subject line
+    html, // html body,
+    attachments
+
   });
 
 }

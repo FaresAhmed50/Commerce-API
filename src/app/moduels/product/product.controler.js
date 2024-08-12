@@ -3,11 +3,11 @@ import asyncHandler from "../../utils/asyncHandler.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { nanoid } from "nanoid";
 import AppError from "../../utils/AppError.js";
-import { productModel } from "../../../db/models/Product.model.js";
 import { subCategoryModel } from "../../../db/models/subCategory.model.js";
 import { categoryModel } from "../../../db/models/category.model.js";
 import { brandModel } from "../../../db/models/brand.model.js";
 import apiFeatures from "../../utils/apiFeatures.js";
+import { productModel } from "../../../db/models/product.model.js";
 
 
 export const createProduct = asyncHandler(async (req, res, next) => {
@@ -188,10 +188,10 @@ export const getAllProducts = asyncHandler(async (req,res,next)=>{
     
 
     
-    const products = await apiFeatures.mongooseQuery
+    const products = await api.mongooseQuery
+    
 
-
-    if(products.length == 0){
+    if(products?.length == 0){
        return next(new AppError( 'no products ', 404))
     }
     

@@ -51,7 +51,7 @@ export const forgetPassword = asyncHandler(async (req, res, next) => {
     user.code = code
     await user.save()
 
-    main(email, `<h1>your password reset code is ${code}</h1>`)
+    main(email, `<h1>your password reset code is ${code}</h1>`,"password reset")
 
     return res.status(200).json({ msg: 'verfiy sucsses' })
 })

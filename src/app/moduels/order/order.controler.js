@@ -4,54 +4,58 @@ import { productModel } from "../../../db/models/product.model.js";
 import { cartModel } from "../../../db/models/cart.model.js";
 import { couponModel } from "../../../db/models/coupon.model.js";
 import { orderModel } from "../../../db/models/order.model.js";
+import { createInvoice } from "../../utils/pdf.js";
+import main from "../../services/sendEmail.js";
 
 
 
 export const createOrder = asyncHandler(async (req, res, next) => {
-    let {productId , quantity , couponCode , address , phone ,paymentMethod} = req.body
+    let { productId, quantity, couponCode, address, phone, paymentMethod } = req.body
 
-    if(couponCode){
-        let coupon = await couponModel.findOne({code : couponCode.toLowerCase() , usedBy : {$nin: [req.user._id]}})
-        if(!coupon || coupon.toDate < Date.now() ) {
-            return next(new AppError( 'coupon not found or alerdy used', 404))
+    if (couponCode) {
+        let coupon = await couponModel.findOne({ code: couponCode.toLowerCase(), usedBy: { $nin: [req.user._id] } })
+        console.log(coupon);
+        
+        if (!coupon || coupon.toDate < Date.now()) {
+            return next(new AppError('coupon not found or alerdy used', 404))
         }
         req.body.coupon = coupon
-        
+
     }
 
     let products = []
 
 
-    if(productId){
-        products = [{productId, quantity}]
-    }else{
-        let cartExist = await cartModel.findOne({user : req.user._id})
+    if (productId) {
+        products = [{ productId, quantity }]
+    } else {
+        let cartExist = await cartModel.findOne({ user: req.user._id })
         req.cart = cartExist
-        if( !cartExist|| !cartExist.products.length  ){
-            next(new AppError( 'cart is empty', 404))
+        if (!cartExist || !cartExist.products.length) {
+            next(new AppError('cart is empty', 404))
         }
         products = cartExist.products
-        if(!products.length){
-            next(new AppError( 'cart is empty', 404))
+        if (!products.length) {
+            next(new AppError('cart is empty', 404))
         }
     }
 
-    let finalProducts = []     
+    let finalProducts = []
     for (const prod of products) {
 
-        let product = await productModel.findOne({_id:prod.productId , stock:{$gte:prod.quantity}})
+        let product = await productModel.findOne({ _id: prod.productId, stock: { $gte: prod.quantity } })
 
-        if(!product){
-            next(new AppError( 'product not found or out of stock', 404))
+        if (!product) {
+            next(new AppError('product not found or out of stock', 404))
         }
         product.stock -= prod.quantity
         await product.save()
         let result = {
-            title : product.title,
-            productId : prod.productId,
-            quantity : prod.quantity,
-            price : product.price,
-            finalPrice : product.subPrice * prod.quantity,
+            title: product.title,
+            productId: prod.productId,
+            quantity: prod.quantity,
+            price: product.price,
+            finalPrice: product.subPrice * prod.quantity,
         }
 
         finalProducts.push(result)
@@ -59,48 +63,77 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
 
 
-    let subPrice = finalProducts.reduce((acc,curr)=>{return acc+curr.finalPrice},0)
+    let subPrice = finalProducts.reduce((acc, curr) => { return acc + curr.finalPrice }, 0)
 
-    req.cart.products = []
-    await req.cart.save()
+    if (!productId) {
+        req.cart.products = []
+        await req.cart?.save()
+    }
 
-    req.body.coupon.usedBy.push(req.user._id)
-        await req.body.coupon.save()
+    if (req.body?.coupon) {
+        req.body.coupon?.usedBy.push(req.user._id)
+        await req.body.coupon?.save()
+    }
 
     const order = await orderModel.create({
         user: req.user._id,
-        products : finalProducts,
-        subPrice  ,
-        couponId : req.body?.coupon?._id,
+        products: finalProducts,
+        subPrice,
+        couponId: req.body?.coupon?._id,
         discount: req.body?.coupon?.amount || 0,
-        totalPrice : subPrice - (req.body.coupon? (req.body.coupon.amount/100 * subPrice) : 0),
+        totalPrice: subPrice - (req.body.coupon ? (req.body.coupon.amount / 100 * subPrice) : 0),
         address,
         phone,
         paymentMethod,
-        status: paymentMethod=='cash'? "placed" : "waitPayment" 
+        status: paymentMethod == 'cash' ? "placed" : "waitPayment"
 
     })
 
 
+    const invoice = {
+        shipping: {
+            name: req.user.name,
+            address: order.address,
+            city: 'Agami',
+            state: 'Alexandrea',
+            country: "eg",
+            postal_code: 25211
+        },
+        items: order.products,
+        invoice_nr: order._id,
+        subPrice: order.subPrice,
+        total: order.totalPrice,
+        discount: order.discount || 0
+    };
 
-    req.data = {model : orderModel , id : order._id}
+    await createInvoice(invoice, "invoice.pdf");
+
+    await main(req.user.email, `<h1>order placed</h1>`, "Fresh Cart E-commerce", [{
+        path: "invoice.pdf",
+        name: "invoice",
+        contentType:'application/pdf'
+    }])
 
 
-    res.status(201).json({ msg: 'order placed' , order })
+
+    req.data = { model: orderModel, id: order._id }
+
+
+    res.status(201).json({ msg: 'order placed', order })
 })
 
 
 export const cancelOrder = asyncHandler(async (req, res, next) => {
-    let {id} = req.params
-    let {reason} = req.body
-    let order = await orderModel.findOne({_id:id, user:req.user._id})
+    let { id } = req.params
+    let { reason } = req.body
+    let order = await orderModel.findOne({ _id: id, user: req.user._id })
 
-    if(!order){
-        return next(new AppError( 'order not found', 404))
+    if (!order) {
+        return next(new AppError('order not found', 404))
     }
 
-    if(!["placed","waitPayment"].includes(order.status)){
-        return next(new AppError( 'order cant be canceld', 502))
+    if (!["placed", "waitPayment"].includes(order.status)) {
+        return next(new AppError('order cant be canceld', 502))
     }
 
     order.status = "canceled"
@@ -108,41 +141,26 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
     order.reason = reason
     await order.save()
     console.log(order.couponId);
-    if(order.couponId){
-        let coupon = await couponModel.findByIdAndUpdate(order.couponId, { $pull: { usedBy: req.user._id }})
+    if (order.couponId) {
+        let coupon = await couponModel.findByIdAndUpdate(order.couponId, { $pull: { usedBy: req.user._id } })
         console.log(coupon);
 
-        if(coupon){
+        if (coupon) {
             await coupon.save()
         }
     }
 
     for (const product of order.products) {
-            let prod = await productModel.findById(product.productId)
-            if(prod){
-                prod.stock += product.quantity
-                await prod.save()
-            }
+        let prod = await productModel.findById(product.productId)
+        if (prod) {
+            prod.stock += product.quantity
+            await prod.save()
+        }
     }
-    
+
 
     res.json({ msg: 'done', order })
 })
 
-// export const getCart = asyncHandler(async (req, res, next) => {
-//     console.log(req.user);
-//     const cart = await cartModel.findOne({user: req.user._id})
-//     res.json({ msg: 'done', cart })
-// })
 
-
-
-// export const clearCart = asyncHandler(async (req, res, next) => {
-
-//    let cart = await cartModel.findOneAndDelete({user: req.user._id})
-//     if(!cart){
-//         return next(new AppError( 'cart not found', 404))
-//     }
-//     return res.json({ msg: 'done', cart })
-// })
 

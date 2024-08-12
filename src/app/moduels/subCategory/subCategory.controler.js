@@ -89,9 +89,7 @@ export const deleteSubCategory = asyncHandler(async (req, res, next) => {
 
     let subCategory = await subCategoryModel.findOneAndDelete({_id:subCategoryID, category : categoryId , createdBy: req.user._id})
 
-    console.log(subCategoryID);
-    console.log(categoryId);
-    console.log(req.user._id);
+    
     
     if(!subCategory){
         next(new AppError( 'subCategory not found ', 404))
@@ -104,7 +102,7 @@ export const deleteSubCategory = asyncHandler(async (req, res, next) => {
 })
 
 export const getCategorySubCategories = asyncHandler(async (req, res, next) => {
-    console.log('in');
+    
     let {categoryId} = req.params
     let category = await categoryModel.findById(categoryId)
     if(!category){

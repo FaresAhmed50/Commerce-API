@@ -35,7 +35,6 @@ export const getCart = asyncHandler(async (req, res, next) => {
 
 export const createCart = asyncHandler(async (req, res, next) => {
     const { productId , quantity } = req.body  
-    console.log("in");
 
     let product = await productModel.findOne({_id:productId , stock : {$gte:quantity}})
     if(!product){

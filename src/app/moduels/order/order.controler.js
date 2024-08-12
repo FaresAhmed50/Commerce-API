@@ -14,7 +14,6 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
     if (couponCode) {
         let coupon = await couponModel.findOne({ code: couponCode.toLowerCase(), usedBy: { $nin: [req.user._id] } })
-        console.log(coupon);
         
         if (!coupon || coupon.toDate < Date.now()) {
             return next(new AppError('coupon not found or alerdy used', 404))
@@ -140,10 +139,8 @@ export const cancelOrder = asyncHandler(async (req, res, next) => {
     order.canceldBy = req.user._id
     order.reason = reason
     await order.save()
-    console.log(order.couponId);
     if (order.couponId) {
         let coupon = await couponModel.findByIdAndUpdate(order.couponId, { $pull: { usedBy: req.user._id } })
-        console.log(coupon);
 
         if (coupon) {
             await coupon.save()

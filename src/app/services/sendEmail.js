@@ -26,6 +26,5 @@ async function main(email,html,subject,attachments=[]) {
 
 }
 
-// main().catch(console.error);
 
 export default main

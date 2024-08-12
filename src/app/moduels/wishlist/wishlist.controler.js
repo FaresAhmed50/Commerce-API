@@ -1,7 +1,6 @@
 import asyncHandler from "../../utils/asyncHandler.js";
 import AppError from "../../utils/AppError.js";
 import { productModel } from "../../../db/models/product.model.js";
-import { cartModel } from "../../../db/models/cart.model.js";
 import { wishListModel } from "../../../db/models/wishList.model.js";
 import axios from "axios";
 
@@ -67,7 +66,6 @@ export const toCart = asyncHandler(async (req, res, next) => {
     }
 
     let data =  await axios.post(`${req.protocol}://${req.headers.host}/cart/` , {productId , quantity:1} , {headers : {token : req.headers.token}})
-    console.log(data.data.msg);
     if(data.data.msg != "product added to cart"){
         return next(new AppError( 'added failed', 404))
     }

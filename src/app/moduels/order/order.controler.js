@@ -126,7 +126,6 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                 name: req.body.coupon.code,
                 percent_off: req.body.coupon.amount,
                 duration: "once",
-                duration_in_months: 1
             })
 
             req.body.couponId = copo.id

@@ -93,29 +93,29 @@ export const createOrder = asyncHandler(async (req, res, next) => {
     req.data = { model: orderModel, id: order._id }
 
 
-    // const invoice = {
-    //     shipping: {
-    //         name: req.user.name,
-    //         address: order.address,
-    //         city: 'Agami',
-    //         state: 'Alexandrea',
-    //         country: "eg",
-    //         postal_code: 25211
-    //     },
-    //     items: order.products,
-    //     invoice_nr: order._id,
-    //     subPrice: order.subPrice,
-    //     total: order.totalPrice,
-    //     discount: order.discount || 0
-    // };
+    const invoice = {
+        shipping: {
+            name: req.user.name,
+            address: order.address,
+            city: 'Agami',
+            state: 'Alexandrea',
+            country: "eg",
+            postal_code: 25211
+        },
+        items: order.products,
+        invoice_nr: order._id,
+        subPrice: order.subPrice,
+        total: order.totalPrice,
+        discount: order.discount || 0
+    };
 
-    // await createInvoice(invoice, "invoice.pdf");
+    await createInvoice(invoice, "invoice.pdf");
 
-    // await main(req.user.email, `<h1>order placed</h1>`, "Fresh Cart E-commerce", [{
-    //     path: "invoice.pdf",
-    //     name: "invoice",
-    //     contentType:'application/pdf'
-    // }])
+    await main(req.user.email, `<h1>order placed</h1>`, "Fresh Cart E-commerce", [{
+        path: "invoice.pdf",
+        name: "invoice",
+        contentType:'application/pdf'
+    }])
 
     
     if(paymentMethod == 'card'){
@@ -129,8 +129,8 @@ export const createOrder = asyncHandler(async (req, res, next) => {
             })
 
             req.body.couponId = copo.id
-            // req.body.coupon?.usedBy.push(req.user._id)
-            // await req.body.coupon?.save()
+            req.body.coupon?.usedBy.push(req.user._id)
+            await req.body.coupon?.save()
         }
 
         let session = await payment({
@@ -163,8 +163,8 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
 
     if (req.body?.coupon) {
-        // req.body.coupon?.usedBy.push(req.user._id)
-        // await req.body.coupon?.save()
+        req.body.coupon?.usedBy.push(req.user._id)
+        await req.body.coupon?.save()
     }
 
 

@@ -175,7 +175,6 @@ export const getProudcts = asyncHandler(async (req,res,next)=>{
 })
 
 
-// complete later
 export const getAllProducts = asyncHandler(async (req,res,next)=>{
 
     let api = new apiFeatures(productModel.find() , req.query)

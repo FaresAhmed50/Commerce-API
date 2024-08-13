@@ -7,6 +7,7 @@ import { orderModel } from "../../../db/models/order.model.js";
 import { createInvoice } from "../../utils/pdf.js";
 import main from "../../services/sendEmail.js";
 import { payment } from "../../utils/payment.js";
+import Stripe from "stripe";
 
 
 
@@ -118,7 +119,23 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
     
     if(paymentMethod == 'card'){
+        const stripe = new Stripe(process.env.stripe_sk)
+
+        if (req.body?.coupon) {
+            let copo = await stripe.coupons.create({
+                name: req.body.coupon.code,
+                percent_off: req.body.coupon.amount,
+                duration: "once",
+                duration_in_months: 1
+            })
+
+            req.body.couponId = copo.id
+            // req.body.coupon?.usedBy.push(req.user._id)
+            // await req.body.coupon?.save()
+        }
+
         let session = await payment({
+            stripe,
             payment_method_types: ["card"],
             mode: "payment",
             customer_email: req.user.email,
@@ -135,15 +152,12 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                     quantity: prod.quantity,
                 }   
             }),
-            // discounts: order.discount ? [{discount: order.discount} ] : [],
+            discounts: req.body.coupon ? [{coupon: req.body.couponId} ] : [],
             success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
             cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
         })
 
-        if (req.body?.coupon) {
-            // req.body.coupon?.usedBy.push(req.user._id)
-            // await req.body.coupon?.save()
-        }
+        
 
         return res.status(200).json({ url: session.url , session})
     }

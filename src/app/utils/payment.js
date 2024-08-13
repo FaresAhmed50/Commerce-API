@@ -25,6 +25,8 @@ export async function payment({
         discounts
     })
 
+    
+
     return session
 
 }

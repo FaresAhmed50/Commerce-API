@@ -137,7 +137,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                     quantity: prod.quantity,
                 }
             }),
-            coupon: order.couponId ? [{ coupon_code: order.couponId }] : [],
+            discounts: order.discount ? [ order.discount ] : [],
             success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
             cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
         })

@@ -70,10 +70,7 @@ export const createOrder = asyncHandler(async (req, res, next) => {
         await req.cart?.save()
     }
 
-    if (req.body?.coupon) {
-        req.body.coupon?.usedBy.push(req.user._id)
-        await req.body.coupon?.save()
-    }
+   
 
   
 
@@ -135,21 +132,29 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                         },
                     },
                     quantity: prod.quantity,
-                }
+                }   
             }),
-            discounts: order.discount ? [ order.discount ] : [],
+            discounts: order.discount ? [{discount: order.discount} ] : [],
             success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
             cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
         })
 
-        res.status(200).json({ url: session.url , session})
+        if (req.body?.coupon) {
+            req.body.coupon?.usedBy.push(req.user._id)
+            await req.body.coupon?.save()
+        }
+
+        return res.status(200).json({ url: session.url , session})
     }
 
 
-    
+    if (req.body?.coupon) {
+        req.body.coupon?.usedBy.push(req.user._id)
+        await req.body.coupon?.save()
+    }
 
 
-    res.status(201).json({ msg: 'order placed', order })
+   return res.status(201).json({ msg: 'order placed', order })
 })
 
 

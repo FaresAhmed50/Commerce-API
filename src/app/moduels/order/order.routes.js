@@ -1,10 +1,8 @@
 import { Router } from "express";
 import auth from "../../glopalMiddelWares/auth.js";
-// import GValidator from "../../glopalMiddelWares/GValidator.js";
 import {cancelOrder, createOrder, deletOrder, getCanceled, getOrder} from './order.controler.js'
 import GValidator from "../../glopalMiddelWares/GValidator.js";
 import { cancelOrderSchema, createOrderSchema } from "./orderSchemas.js";
-// import { createCartSchema } from "./orderSchemas.js";
 
 
 let orderRouter = Router()

@@ -11,6 +11,7 @@ import { payment } from "../../utils/payment.js";
 
 
 export const createOrder = asyncHandler(async (req, res, next) => {
+    
     let { productId, quantity, couponCode, address, phone, paymentMethod } = req.body
 
     if (couponCode) {
@@ -134,14 +135,14 @@ export const createOrder = asyncHandler(async (req, res, next) => {
                     quantity: prod.quantity,
                 }   
             }),
-            discounts: order.discount ? [{discount: order.discount} ] : [],
+            // discounts: order.discount ? [{discount: order.discount} ] : [],
             success_url: `${req.protocol}://${req.headers.host}/order/success/${order._id}`,
             cancel_url:  `${req.protocol}://${req.headers.host}/order/cancel/${order._id}`
         })
 
         if (req.body?.coupon) {
-            req.body.coupon?.usedBy.push(req.user._id)
-            await req.body.coupon?.save()
+            // req.body.coupon?.usedBy.push(req.user._id)
+            // await req.body.coupon?.save()
         }
 
         return res.status(200).json({ url: session.url , session})
@@ -149,8 +150,8 @@ export const createOrder = asyncHandler(async (req, res, next) => {
 
 
     if (req.body?.coupon) {
-        req.body.coupon?.usedBy.push(req.user._id)
-        await req.body.coupon?.save()
+        // req.body.coupon?.usedBy.push(req.user._id)
+        // await req.body.coupon?.save()
     }
 
 

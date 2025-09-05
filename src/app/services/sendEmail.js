@@ -7,8 +7,8 @@ const transporter = createTransport({
   port: 587,
   secure: false, // Use `true` for port 465, `false` for all other ports
   auth: {
-    user: process.env.GmailEmail,
-    pass: process.env.GmailPassword,
+    user: process.env.NODE_MAILLER_AUTH_EMAIL,
+    pass: process.env.NODE_MAILLER_PASSWORD,
   },
 });
 
@@ -16,7 +16,7 @@ const transporter = createTransport({
 async function main(email,html,subject,attachments=[]) {
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: '"Route E-commerce"', // sender address
+    from: `"fares" <${process.env.NODE_MAILLER_AUTH_EMAIL}>` ,
     to: email, // list of receivers
     subject , // Subject line
     html, // html body,
